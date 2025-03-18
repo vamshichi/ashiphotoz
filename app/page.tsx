@@ -1,103 +1,223 @@
-import Image from "next/image";
+import Link from "next/link"
+import Image from "next/image"
+import { ArrowRight, Camera, Heart, Star, Users } from "lucide-react"
+
+import { Button } from "@/components/ui/button"
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="flex flex-col min-h-screen">
+      {/* Hero Section */}
+      <section className="relative w-full h-[80vh] flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <Image
+            src="/placeholder.svg?height=1080&width=1920"
+            alt="Photography background"
+            fill
+            className="object-cover brightness-50"
+            priority
+          />
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        <div className="container relative z-10 px-4 mx-auto text-center text-white">
+          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">Ashi Photoz</h1>
+          <p className="max-w-2xl mx-auto mt-6 text-xl">Capturing your precious moments with artistic excellence</p>
+          <div className="flex flex-wrap items-center justify-center gap-4 mt-10">
+            <Button asChild size="lg" className="text-lg">
+              <Link href="/portfolio">View Our Work</Link>
+            </Button>
+            <Button
+              asChild
+              variant="outline"
+              size="lg"
+              className="text-lg bg-transparent border-white text-white hover:bg-white hover:text-black"
+            >
+              <Link href="/contact">Book a Session</Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Services Preview */}
+      <section className="py-20 bg-white">
+        <div className="container px-4 mx-auto">
+          <div className="flex flex-col items-center mb-16 text-center">
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Our Services</h2>
+            <p className="max-w-2xl mt-4 text-lg text-muted-foreground">
+              Professional photography services tailored to your needs
+            </p>
+          </div>
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {services.map((service) => (
+              <div key={service.title} className="flex flex-col p-6 transition-all border rounded-lg hover:shadow-lg">
+                <div className="p-2 mb-4 rounded-full w-fit bg-primary/10">
+                  <service.icon className="w-6 h-6 text-primary" />
+                </div>
+                <h3 className="mb-2 text-xl font-bold">{service.title}</h3>
+                <p className="mb-4 text-muted-foreground">{service.description}</p>
+                <Link
+                  href={`/services#${service.title.toLowerCase().replace(/\s+/g, "-")}`}
+                  className="flex items-center mt-auto text-sm font-medium text-primary"
+                >
+                  Learn more <ArrowRight className="w-4 h-4 ml-1" />
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Portfolio Preview */}
+      <section className="py-20 bg-gray-50">
+        <div className="container px-4 mx-auto">
+          <div className="flex flex-col items-center mb-16 text-center">
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Featured Work</h2>
+            <p className="max-w-2xl mt-4 text-lg text-muted-foreground">A glimpse of our recent photography projects</p>
+          </div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {portfolioItems.slice(0, 6).map((item, index) => (
+              <div key={index} className="relative overflow-hidden transition-all rounded-lg group hover:shadow-xl">
+                <Image
+                  src={item.image || "/placeholder.svg"}
+                  alt={item.category}
+                  width={400}
+                  height={300}
+                  className="object-cover w-full aspect-[4/3] transition-transform duration-500 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-white transition-opacity bg-black/60 opacity-0 group-hover:opacity-100">
+                  <h3 className="text-xl font-bold">{item.title}</h3>
+                  <p className="mt-2">{item.category}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="flex justify-center mt-12">
+            <Button asChild size="lg">
+              <Link href="/portfolio">View All Projects</Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="py-20 bg-white">
+        <div className="container px-4 mx-auto">
+          <div className="flex flex-col items-center mb-16 text-center">
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">What Our Clients Say</h2>
+            <p className="max-w-2xl mt-4 text-lg text-muted-foreground">
+              Hear from people who have experienced our services
+            </p>
+          </div>
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {testimonials.map((testimonial, index) => (
+              <div key={index} className="p-6 transition-all border rounded-lg hover:shadow-lg">
+                <div className="flex items-center mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-5 h-5 text-yellow-500 fill-yellow-500" />
+                  ))}
+                </div>
+                <p className="mb-6 italic text-muted-foreground">"{testimonial.text}"</p>
+                <div className="flex items-center">
+                  <div className="relative w-12 h-12 mr-4 overflow-hidden rounded-full">
+                    <Image
+                      src="/placeholder.svg?height=50&width=50"
+                      alt={testimonial.name}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold">{testimonial.name}</h4>
+                    <p className="text-sm text-muted-foreground">{testimonial.role}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 text-white bg-primary">
+        <div className="container px-4 mx-auto text-center">
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Ready to Capture Your Moments?</h2>
+          <p className="max-w-2xl mx-auto mt-4 text-lg text-primary-foreground/90">
+            Let's create beautiful memories together. Book a session with us today.
+          </p>
+          <Button asChild size="lg" variant="secondary" className="mt-10">
+            <Link href="/contact">Get in Touch</Link>
+          </Button>
+        </div>
+      </section>
     </div>
-  );
+  )
 }
+
+const services = [
+  {
+    title: "Wedding Photography",
+    description: "Capture the magic of your special day with our professional wedding photography services.",
+    icon: Heart,
+  },
+  {
+    title: "Portrait Sessions",
+    description: "Professional portrait photography for individuals, families, and corporate needs.",
+    icon: Users,
+  },
+  {
+    title: "Event Coverage",
+    description: "Comprehensive photography coverage for all types of events and celebrations.",
+    icon: Camera,
+  },
+]
+
+const portfolioItems = [
+  {
+    title: "Summer Wedding",
+    category: "Wedding",
+    image: "/placeholder.svg?height=600&width=800",
+  },
+  {
+    title: "Corporate Portraits",
+    category: "Portrait",
+    image: "/placeholder.svg?height=600&width=800",
+  },
+  {
+    title: "Fashion Shoot",
+    category: "Fashion",
+    image: "/placeholder.svg?height=600&width=800",
+  },
+  {
+    title: "Family Reunion",
+    category: "Event",
+    image: "/placeholder.svg?height=600&width=800",
+  },
+  {
+    title: "Product Launch",
+    category: "Commercial",
+    image: "/placeholder.svg?height=600&width=800",
+  },
+  {
+    title: "Engagement Session",
+    category: "Couples",
+    image: "/placeholder.svg?height=600&width=800",
+  },
+]
+
+const testimonials = [
+  {
+    text: "Ashi Photoz captured our wedding day perfectly. The photos are beyond what we could have imagined!",
+    name: "Sarah & Michael",
+    role: "Newlyweds",
+  },
+  {
+    text: "The team was professional, creative, and made our family feel comfortable during the entire session.",
+    name: "James Wilson",
+    role: "Family Portrait Client",
+  },
+  {
+    text: "Our corporate event was documented beautifully. The attention to detail in every shot was impressive.",
+    name: "Emily Chen",
+    role: "Marketing Director",
+  },
+]
+
