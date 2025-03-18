@@ -101,7 +101,7 @@ const services = [
     description:
       "Capture the magic and emotion of your special day with our professional wedding photography services.",
     icon: Heart,
-    image: "/placeholder.svg?height=600&width=800",
+    image: "/images/wedding.jpg",
     features: [
       "Pre-wedding consultation and planning",
       "Coverage of ceremony and reception",
@@ -116,7 +116,7 @@ const services = [
     description:
       "Professional portrait photography for individuals, families, and corporate needs that capture personality and emotion.",
     icon: Users,
-    image: "/placeholder.svg?height=600&width=800",
+    image: "/images/wedding.jpg",
     features: [
       "Indoor or outdoor location options",
       "Multiple outfit changes",
@@ -131,7 +131,7 @@ const services = [
     description:
       "Comprehensive photography coverage for all types of events and celebrations, from corporate gatherings to special occasions.",
     icon: Camera,
-    image: "/placeholder.svg?height=600&width=800",
+    image: "/images/wedding.jpg",
     features: [
       "Full event documentation",
       "Candid and posed photography",

@@ -85,62 +85,62 @@ const portfolioItems: PortfolioItemType[] = [
   {
     title: "Summer Wedding",
     category: "Wedding",
-    image: "/placeholder.svg?height=600&width=800",
+    image: "/images/images.png",
   },
   {
     title: "Corporate Portraits",
     category: "Portrait",
-    image: "/placeholder.svg?height=600&width=800",
+    image: "/images/images.png",
   },
   {
     title: "Fashion Shoot",
     category: "Fashion",
-    image: "/placeholder.svg?height=600&width=800",
+    image: "/images/images.png",
   },
   {
     title: "Family Reunion",
     category: "Event",
-    image: "/placeholder.svg?height=600&width=800",
+    image: "/images/images.png",
   },
   {
     title: "Product Launch",
     category: "Commercial",
-    image: "/placeholder.svg?height=600&width=800",
+    image: "/images/images.png",
   },
   {
     title: "Engagement Session",
     category: "Couples",
-    image: "/placeholder.svg?height=600&width=800",
+    image: "/images/images.png",
   },
   {
     title: "Beach Wedding",
     category: "Wedding",
-    image: "/placeholder.svg?height=600&width=800",
+    image: "/images/images.png",
   },
   {
     title: "Graduation Photos",
     category: "Portrait",
-    image: "/placeholder.svg?height=600&width=800",
+    image: "/images/images.png",
   },
   {
     title: "Concert Photography",
     category: "Event",
-    image: "/placeholder.svg?height=600&width=800",
+    image: "/images/images.png",
   },
   {
     title: "Product Catalog",
     category: "Commercial",
-    image: "/placeholder.svg?height=600&width=800",
+    image: "/images/images.png",
   },
   {
     title: "Maternity Session",
     category: "Portrait",
-    image: "/placeholder.svg?height=600&width=800",
+    image: "/images/images.png",
   },
   {
     title: "Winter Wedding",
     category: "Wedding",
-    image: "/placeholder.svg?height=600&width=800",
+    image: "/images/images.png",
   },
 ]
 

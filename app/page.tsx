@@ -5,16 +5,18 @@ import { ArrowRight, Camera, Heart, Star, Users } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 export default function Home() {
+  
+
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
       <section className="relative w-full h-[80vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <Image
-            src="/placeholder.svg?height=1080&width=1920"
+            src="https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aW1hZ2V8ZW58MHx8MHx8fDA%3D"
             alt="Photography background"
             fill
-            className="object-cover brightness-50"
+            className="object-cover brightness-50 bg-black opacity-90"
             priority
           />
         </div>
@@ -174,32 +176,32 @@ const portfolioItems = [
   {
     title: "Summer Wedding",
     category: "Wedding",
-    image: "/placeholder.svg?height=600&width=800",
+    image: "/images/wedding.jpg",
   },
   {
     title: "Corporate Portraits",
     category: "Portrait",
-    image: "/placeholder.svg?height=600&width=800",
+    image: "/images/Corporate_Portraits.jpg",
   },
   {
     title: "Fashion Shoot",
     category: "Fashion",
-    image: "/placeholder.svg?height=600&width=800",
+    image: "/images/images.png",
   },
   {
     title: "Family Reunion",
     category: "Event",
-    image: "/placeholder.svg?height=600&width=800",
+    image: "/images/images.png",
   },
   {
     title: "Product Launch",
     category: "Commercial",
-    image: "/placeholder.svg?height=600&width=800",
+    image: "/images/images.png",
   },
   {
     title: "Engagement Session",
     category: "Couples",
-    image: "/placeholder.svg?height=600&width=800",
+    image: "/images/images.png",
   },
 ]
 

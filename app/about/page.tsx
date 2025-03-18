@@ -14,7 +14,7 @@ export default function AboutPage() {
       {/* Our Story */}
       <section className="grid gap-12 mb-20 md:grid-cols-2 md:items-center">
         <div className="relative overflow-hidden rounded-lg aspect-square">
-          <Image src="/placeholder.svg?height=800&width=800" alt="Studio founder" fill className="object-cover" />
+          <Image src="/images/Corporate-Portraits.jpg" alt="Studio founder" fill className="object-cover" />
         </div>
         <div>
           <h2 className="mb-6 text-3xl font-bold">Our Story</h2>
