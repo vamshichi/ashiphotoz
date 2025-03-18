@@ -21,7 +21,7 @@ export default function AboutPage() {
           <div className="space-y-4 text-lg">
             <p>
               Founded in 2015 by Ashi Kumar, Ashi Photoz began as a passion project that quickly evolved into one of the
-              region's most sought-after photography studios.
+              region&apos;s most sought-after photography studios.
             </p>
             <p>
               With a background in fine arts and a keen eye for detail, Ashi built a team of talented photographers who
@@ -33,7 +33,7 @@ export default function AboutPage() {
             </p>
             <p>
               Our philosophy is simple: we believe that every moment deserves to be preserved with artistry and care.
-              We're not just taking pictures; we're creating visual legacies that will be cherished for generations.
+              We&apos;re not just taking pictures; we&apos;re creating visual legacies that will be cherished for generations.
             </p>
           </div>
         </div>
@@ -102,7 +102,7 @@ export default function AboutPage() {
       <section className="p-8 text-center bg-primary text-primary-foreground rounded-xl">
         <h2 className="mb-4 text-2xl font-bold sm:text-3xl">Ready to work with us?</h2>
         <p className="max-w-2xl mx-auto mb-8 text-lg text-primary-foreground/90">
-          Let's create beautiful memories together. Contact us today to discuss your photography needs.
+          Let&apos;s create beautiful memories together. Contact us today to discuss your photography needs.
         </p>
         <Button asChild variant="secondary" size="lg">
           <Link href="/contact">Get in Touch</Link>

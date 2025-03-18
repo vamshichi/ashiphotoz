@@ -115,7 +115,7 @@ export default function Home() {
                     <Star key={i} className="w-5 h-5 text-yellow-500 fill-yellow-500" />
                   ))}
                 </div>
-                <p className="mb-6 italic text-muted-foreground">"{testimonial.text}"</p>
+                <p className="mb-6 italic text-muted-foreground">{testimonial.text}</p>
                 <div className="flex items-center">
                   <div className="relative w-12 h-12 mr-4 overflow-hidden rounded-full">
                     <Image
@@ -141,7 +141,7 @@ export default function Home() {
         <div className="container px-4 mx-auto text-center">
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Ready to Capture Your Moments?</h2>
           <p className="max-w-2xl mx-auto mt-4 text-lg text-primary-foreground/90">
-            Let's create beautiful memories together. Book a session with us today.
+            Let&apos;s create beautiful memories together. Book a session with us today.
           </p>
           <Button asChild size="lg" variant="secondary" className="mt-10">
             <Link href="/contact">Get in Touch</Link>
