@@ -57,35 +57,40 @@ export default function Header() {
         </div>
 
         {/* Mobile Navigation */}
-        <Sheet open={isOpen} onOpenChange={setIsOpen}>
-          <SheetTrigger asChild className="md:hidden">
-            <Button variant="ghost" size="icon">
-              <Menu className="w-5 h-5" />
-              <span className="sr-only">Toggle menu</span>
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-            <nav className="flex flex-col gap-4 mt-8">
-              {navigation.map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  onClick={() => setIsOpen(false)}
-                  className={`text-lg font-medium transition-colors hover:text-primary ${
-                    pathname === item.href ? "text-primary" : "text-muted-foreground"
-                  }`}
-                >
-                  {item.name}
-                </Link>
-              ))}
-              <Button asChild className="mt-4">
-                <Link href="/contact" onClick={() => setIsOpen(false)}>
-                  Book Now
-                </Link>
-              </Button>
-            </nav>
-          </SheetContent>
-        </Sheet>
+<Sheet open={isOpen} onOpenChange={setIsOpen}>
+  <SheetTrigger asChild className="md:hidden">
+    <Button variant="ghost" size="icon">
+      <Menu className="w-6 h-6" />
+      <span className="sr-only">Toggle menu</span>
+    </Button>
+  </SheetTrigger>
+  <SheetContent side="right" className="w-[85%] max-w-[380px] sm:w-[400px] bg-white dark:bg-gray-900">
+  {/* <SheetTitle className="sr-only">Navigation Menu</SheetTitle> Hidden but accessible */}
+  <nav className="flex flex-col gap-5 mt-10 p-6 items-center">
+    {navigation.map((item) => (
+      <Link
+        key={item.name}
+        href={item.href}
+        onClick={() => setIsOpen(false)}
+        className={`text-lg font-semibold w-full text-center py-2 rounded-lg transition-colors ${
+          pathname === item.href 
+            ? "bg-primary text-white shadow-md" 
+            : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+        }`}
+      >
+        {item.name}
+      </Link>
+    ))}
+    <Button asChild className="mt-5 w-full text-lg py-3">
+      <Link href="/contact" onClick={() => setIsOpen(false)}>
+        Book Now
+      </Link>
+    </Button>
+  </nav>
+</SheetContent>
+
+</Sheet>
+
       </div>
     </header>
   )

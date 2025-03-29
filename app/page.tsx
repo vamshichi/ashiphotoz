@@ -5,6 +5,7 @@ import { FaInstagram, FaYoutube } from "react-icons/fa";
 import { MdLocationOn } from "react-icons/md";
 
 import { Button } from "@/components/ui/button"
+import Video from "@/components/videosection/video";
 
 export default function Home() {
   
@@ -71,7 +72,7 @@ export default function Home() {
   </div>
   </section>
 
-
+    
       {/* Services Preview */}
       <section className="py-20 bg-white">
         <div className="container px-4 mx-auto">
@@ -100,6 +101,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <Video />
 
       {/* Portfolio Preview */}
       <section className="py-20 bg-gray-50">
@@ -152,14 +155,14 @@ export default function Home() {
                 </div>
                 <p className="mb-6 italic text-muted-foreground">{testimonial.text}</p>
                 <div className="flex items-center">
-                  <div className="relative w-12 h-12 mr-4 overflow-hidden rounded-full">
+                  {/* <div className="relative w-12 h-12 mr-4 overflow-hidden rounded-full">
                     <Image
                       src="/placeholder.svg?height=50&width=50"
                       alt={testimonial.name}
                       fill
                       className="object-cover"
                     />
-                  </div>
+                  </div> */}
                   <div>
                     <h4 className="font-semibold">{testimonial.name}</h4>
                     <p className="text-sm text-muted-foreground">{testimonial.role}</p>
@@ -209,32 +212,32 @@ const portfolioItems = [
   {
     title: "Summer Wedding",
     category: "Wedding",
-    image: "/images/wedding.jpg",
+    image: "/images/0 (25).jpg",
   },
   {
     title: "Corporate Portraits",
     category: "Portrait",
-    image: "/images/Corporate_Portraits.jpg",
+    image: "/images/1 (6).jpg",
   },
   {
     title: "Fashion Shoot",
     category: "Fashion",
-    image: "/images/images.png",
+    image: "/images/2 (7).jpg",
   },
   {
     title: "Family Reunion",
     category: "Event",
-    image: "/images/images.png",
+    image: "/images/1 (18).jpg",
   },
   {
     title: "Product Launch",
     category: "Commercial",
-    image: "/images/images.png",
+    image: "/images/1 (8).jpg",
   },
   {
     title: "Engagement Session",
     category: "Couples",
-    image: "/images/images.png",
+    image: "/images/0 (3).jpg",
   },
 ]
 
