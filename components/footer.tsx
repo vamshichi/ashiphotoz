@@ -57,15 +57,15 @@ export default function Footer() {
             <ul className="space-y-3">
               <li className="flex items-start gap-3 text-gray-400">
                 <MapPin className="w-5 h-5 shrink-0 text-primary" />
-                <span>123 Photography Lane, Creative City, 12345</span>
+                <span>Shivakote, main road, opposite Oxygen gym, Hesaraghatta, Bengaluru, Karnataka 560089</span>
               </li>
               <li className="flex items-center gap-3 text-gray-400">
                 <Phone className="w-5 h-5 shrink-0 text-primary" />
-                <span>(123) 456-7890</span>
+                <span>+91 99642 84475</span>
               </li>
               <li className="flex items-center gap-3 text-gray-400">
                 <Mail className="w-5 h-5 shrink-0 text-primary" />
-                <span>info@ashiphotoz.com</span>
+                <span>Ashi.photoz1@gmail.com</span>
               </li>
             </ul>
           </div>
@@ -75,8 +75,8 @@ export default function Footer() {
             <h3 className="mb-4 text-lg font-semibold">Subscribe</h3>
             <p className="mb-4 text-gray-400">Subscribe to our newsletter for the latest updates and special offers.</p>
             <div className="flex gap-2">
-              <Input type="email" placeholder="Your email" className="bg-gray-800 border-gray-700 text-white" />
-              <Button>Subscribe</Button>
+              <Input type="email" placeholder="Your email" className="bg-gray-50 border-gray-700 text-white" />
+              <Button className="bg-gray-400">Subscribe</Button>
             </div>
           </div>
         </div>
