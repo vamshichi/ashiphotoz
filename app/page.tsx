@@ -122,8 +122,8 @@ export default function Home() {
                   className="object-cover w-full aspect-[4/3] transition-transform duration-500 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-white transition-opacity bg-black/60 opacity-0 group-hover:opacity-100">
-                  <h3 className="text-xl font-bold">{item.title}</h3>
-                  <p className="mt-2">{item.category}</p>
+                  {/* <h3 className="text-xl font-bold">{item.title}</h3> */}
+                  {/* <p className="mt-2">{item.category}</p> */}
                 </div>
               </div>
             ))}

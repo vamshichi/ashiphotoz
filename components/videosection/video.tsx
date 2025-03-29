@@ -6,6 +6,7 @@ const videoSections = [
       "https://youtu.be/tEK61syaF1o",
       "https://youtu.be/Avi3Gk2G0G0",
       "https://youtu.be/D77AbK2V0aI",
+     
     ],
   },
   {
@@ -14,6 +15,7 @@ const videoSections = [
       "https://youtu.be/eXcuKQDzZ9E",
       "https://youtu.be/kduO1hfW-Lc",
       "https://youtu.be/PPuxNT_H2GE",
+      "https://youtu.be/X0_iSAYgpuE",
     ],
   },
   {
