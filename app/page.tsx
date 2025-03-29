@@ -1,6 +1,8 @@
 import Link from "next/link"
 import Image from "next/image"
 import { ArrowRight, Camera, Heart, Star, Users } from "lucide-react"
+import { FaInstagram, FaYoutube } from "react-icons/fa";
+import { MdLocationOn } from "react-icons/md";
 
 import { Button } from "@/components/ui/button"
 
@@ -10,34 +12,65 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
-      <section className="relative w-full h-[80vh] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="/images/Edited photo.jpg"
-            alt="Photography background"
-            fill
-            className="object-cover brightness-50 bg-black opacity-90"
-            priority
-          />
-        </div>
-        <div className="container relative z-10 px-4 mx-auto text-center text-white">
-          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">Ashi Photoz</h1>
-          <p className="max-w-2xl mx-auto mt-6 text-xl">Capturing your precious moments with artistic excellence</p>
-          <div className="flex flex-wrap items-center justify-center gap-4 mt-10">
-            <Button asChild size="lg" className="text-lg">
-              <Link href="/portfolio">View Our Work</Link>
-            </Button>
-            <Button
-              asChild
-              variant="outline"
-              size="lg"
-              className="text-lg bg-transparent border-white text-white hover:bg-white hover:text-black"
-            >
-              <Link href="/contact">Book a Session</Link>
-            </Button>
-          </div>
-        </div>
-      </section>
+      <section className="relative w-full h-[80vh] flex flex-col justify-center pt-20 overflow-hidden">
+  <div className="absolute inset-0 z-0">
+    <Image
+      src="/images/Edited photo.jpg"
+      alt="Photography background"
+      fill
+      className="object-cover brightness-50 bg-black opacity-90"
+      priority
+    />
+  </div>
+  <div className="container relative z-10 px-4 mx-auto text-center text-white flex flex-col justify-between h-full">
+    {/* Main Content */}
+    <div>
+      <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">Ashi Photoz</h1>
+      <p className="max-w-2xl mx-auto mt-6 text-xl">
+        Capturing your precious moments with artistic excellence
+      </p>
+      <div className="flex flex-wrap items-center justify-center gap-4 mt-10">
+        <Button asChild size="lg" className="text-lg">
+          <Link href="/portfolio">View Our Work</Link>
+        </Button>
+        <Button
+          asChild
+          variant="outline"
+          size="lg"
+          className="text-lg bg-transparent border-white text-white hover:bg-white hover:text-black"
+        >
+          <Link href="/contact">Book a Session</Link>
+        </Button>
+      </div>
+    </div>
+
+    {/* Social Links at the Bottom */}
+    <div className="flex justify-center gap-6 mb-6">
+      <Link
+        href="https://maps.app.goo.gl/KCCr9aGL4U6jUVRbA?g_st=ac"
+        target="_blank"
+        className="text-white hover:text-gray-300 transition text-3xl"
+      >
+        <MdLocationOn />
+      </Link>
+      <Link
+        href="https://www.instagram.com/ashi.photoz?igsh=bDh5cWVuMXJxbnlx"
+        target="_blank"
+        className="text-white hover:text-gray-300 transition text-3xl"
+      >
+        <FaInstagram />
+      </Link>
+      <Link
+        href="https://www.youtube.com/@ashi.photoz"
+        target="_blank"
+        className="text-white hover:text-gray-300 transition text-3xl"
+      >
+        <FaYoutube />
+      </Link>
+    </div>
+  </div>
+  </section>
+
 
       {/* Services Preview */}
       <section className="py-20 bg-white">

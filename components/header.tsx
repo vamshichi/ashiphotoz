@@ -3,7 +3,8 @@
 import { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Camera, Menu } from "lucide-react"
+import { Menu } from "lucide-react"
+import Image from "next/image"
 
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
@@ -23,10 +24,16 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex items-center justify-between h-16 px-4 mx-auto">
-        <Link href="/" className="flex items-center gap-2 text-xl font-bold">
-          <Camera className="w-6 h-6" />
-          <span>Ashi Photoz</span>
-        </Link>
+      <Link href="/" className="flex items-center gap-2 text-xl font-bold">
+  <Image 
+    src="/icon.png" 
+    alt="Ashi Photoz Logo" 
+    width={130} 
+    height={130} 
+    className="w-30 h-20"
+  />
+  {/* <span>Ashi Photoz</span> */}
+</Link>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex md:gap-6">
