@@ -111,17 +111,17 @@ export default function Home() {
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Featured Work</h2>
             <p className="max-w-2xl mt-4 text-lg text-muted-foreground">A glimpse of our recent photography projects</p>
           </div>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1  sm:grid-cols-2 lg:grid-cols-3">
             {portfolioItems.slice(0, 6).map((item, index) => (
-              <div key={index} className="relative overflow-hidden transition-all rounded-lg group hover:shadow-xl">
+              <div key={index} className="relative overflow-hidden transition-all group hover:shadow-xl">
                 <Image
                   src={item.image || "/placeholder.svg"}
                   alt={item.category}
                   width={400}
                   height={300}
-                  className="object-cover w-full aspect-[4/3] transition-transform duration-500 group-hover:scale-110"
+                  className=" w-full aspect-[4/3] transition-transform duration-500 group-hover:scale-110"
                 />
-                <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-white transition-opacity bg-black/60 opacity-0 group-hover:opacity-100">
+                <div className="absolute inset-0 flex flex-col items-center justify-center  text-white transition-opacity bg-black/60 opacity-0 group-hover:opacity-100">
                   {/* <h3 className="text-xl font-bold">{item.title}</h3> */}
                   {/* <p className="mt-2">{item.category}</p> */}
                 </div>
