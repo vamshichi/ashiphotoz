@@ -217,27 +217,27 @@ const portfolioItems = [
   {
     title: "Corporate Portraits",
     category: "Portrait",
-    image: "/images/1 (6).jpg",
+    image: "/images/13.jpg",
   },
   {
     title: "Fashion Shoot",
     category: "Fashion",
-    image: "/images/2 (7).jpg",
+    image: "/images/3.jpg",
   },
   {
     title: "Family Reunion",
     category: "Event",
-    image: "/images/1 (18).jpg",
+    image: "/images/2 (5).jpg",
   },
   {
     title: "Product Launch",
     category: "Commercial",
-    image: "/images/1 (8).jpg",
+    image: "/images/4s.jpg",
   },
   {
     title: "Engagement Session",
     category: "Couples",
-    image: "/images/0 (3).jpg",
+    image: "/images/1 (2).jpg",
   },
 ]
 
