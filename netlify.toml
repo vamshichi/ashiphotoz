@@ -1,0 +1,13 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+[build.environment]
+  PRISMA_GENERATE_DATAPROXY = "true"
+
+# Clear cache on every deploy
+[[plugins]]
+package = "netlify-plugin-cache-killer" 

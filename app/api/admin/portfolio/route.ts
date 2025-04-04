@@ -13,6 +13,14 @@ const PORTFOLIO_CATEGORIES = [
   "Other"
 ] as const;
 
+async function initPrisma() {
+  try {
+    await prisma;
+  } catch (error) {
+    console.error("Error initializing Prisma:", error);
+  }
+}
+
 export async function GET() {
   try {
     const items = await prisma.portfolio.findMany({
