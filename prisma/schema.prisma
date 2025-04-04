@@ -59,3 +59,10 @@ enum Role {
   USER
   ADMIN
 }
+
+enum ContentType {
+  YOUTUBE
+  IMAGE
+  SERVICE
+  TESTIMONIAL
+}

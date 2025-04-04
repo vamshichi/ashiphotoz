@@ -1,4 +1,10 @@
-import { ContentType } from "@prisma/client";
+// Define the ContentType enum locally if you're not using it elsewhere
+export enum ContentType {
+  YOUTUBE = "YOUTUBE",
+  IMAGE = "IMAGE",
+  SERVICE = "SERVICE",
+  TESTIMONIAL = "TESTIMONIAL"
+}
 
 export function validateAndConvertCategory(category: string): ContentType {
   const normalizedCategory = category.toUpperCase().replace(/-/g, "_");
