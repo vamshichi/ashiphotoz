@@ -6,17 +6,15 @@ export async function GET() {
   try {
     const testimonials = await prisma.testimonial.findMany({
       orderBy: {
-        createdAt: "desc",
+        createdAt: 'desc'
       }
     });
-
     return NextResponse.json(testimonials);
   } catch (error) {
     console.error("Error fetching testimonials:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch testimonials" },
-      { status: 500 }
-    );
+    return NextResponse.json({ 
+      error: "Failed to fetch testimonials" 
+    }, { status: 500 });
   }
 }
 
@@ -24,86 +22,82 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    console.log('Received body:', body); // Debug log
-
     const { name, content, rating } = body;
 
     // Validate required fields
-    if (!name) {
-      return NextResponse.json(
-        { error: "Name is required" },
-        { status: 400 }
-      );
+    if (!name || rating === undefined) {
+      return NextResponse.json({ 
+        error: "Name and rating are required" 
+      }, { status: 400 });
     }
 
-    // Ensure rating is a valid number
+    // Validate rating
     const parsedRating = parseInt(rating);
     if (isNaN(parsedRating) || parsedRating < 1 || parsedRating > 5) {
-      return NextResponse.json(
-        { error: "Rating must be a number between 1 and 5" },
-        { status: 400 }
-      );
+      return NextResponse.json({ 
+        error: "Rating must be a number between 1 and 5" 
+      }, { status: 400 });
     }
 
     const testimonial = await prisma.testimonial.create({
       data: {
         name,
-        content: content || "", // Provide empty string if content is null
-        rating: parsedRating, // Use the parsed rating
+        content: content || "",
+        rating: parsedRating,
       },
     });
 
-    return NextResponse.json(testimonial);
+    return NextResponse.json({ 
+      success: true, 
+      data: testimonial 
+    });
   } catch (error) {
     console.error("Error creating testimonial:", error);
-    if (error instanceof SyntaxError) {
-      return NextResponse.json(
-        { error: "Invalid JSON data provided" },
-        { status: 400 }
-      );
-    }
-    return NextResponse.json(
-      { error: "Failed to create testimonial" },
-      { status: 500 }
-    );
+    return NextResponse.json({ 
+      error: "Failed to create testimonial" 
+    }, { status: 500 });
   }
 }
 
 // Update a testimonial
-export async function PUT(req: Request) {
+export async function PUT(request: Request) {
   try {
-    const { id, ...data } = await req.json();
+    const body = await request.json();
+    const { id, name, content, rating } = body;
     
-    // Ensure rating is a valid number if provided
-    if (data.rating !== undefined) {
-      const parsedRating = parseInt(data.rating);
-      if (isNaN(parsedRating) || parsedRating < 1 || parsedRating > 5) {
-        return NextResponse.json(
-          { error: "Rating must be a number between 1 and 5" },
-          { status: 400 }
-        );
-      }
-      data.rating = parsedRating;
+    // Validate required fields
+    if (!id || !name || !content || rating === undefined) {
+      return NextResponse.json({ 
+        error: "ID, name, content, and rating are required" 
+      }, { status: 400 });
+    }
+
+    // Validate rating
+    const parsedRating = parseInt(rating);
+    if (isNaN(parsedRating) || parsedRating < 1 || parsedRating > 5) {
+      return NextResponse.json({ 
+        error: "Rating must be a number between 1 and 5" 
+      }, { status: 400 });
     }
 
     const testimonial = await prisma.testimonial.update({
       where: { id },
-      data,
+      data: {
+        name,
+        content,
+        rating: parsedRating,
+      },
     });
 
-    return NextResponse.json(testimonial);
+    return NextResponse.json({ 
+      success: true, 
+      data: testimonial 
+    });
   } catch (error) {
     console.error("Error updating testimonial:", error);
-    if (error instanceof SyntaxError) {
-      return NextResponse.json(
-        { error: "Invalid JSON data provided" },
-        { status: 400 }
-      );
-    }
-    return NextResponse.json(
-      { error: "Failed to update testimonial" },
-      { status: 500 }
-    );
+    return NextResponse.json({ 
+      error: "Failed to update testimonial" 
+    }, { status: 500 });
   }
 }
 

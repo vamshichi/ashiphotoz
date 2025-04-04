@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { writeFile } from 'fs/promises';
+import { writeFile, unlink } from 'fs/promises';
 import { join } from 'path';
 import { mkdir } from 'fs/promises';
 
@@ -86,18 +86,65 @@ export async function POST(request: Request) {
 }
 
 // Update a service
-export async function PUT(req: Request) {
+export async function PUT(request: Request) {
   try {
-    const { id, ...data } = await req.json();
-    const service = await prisma.service.update({
-      where: { id },
-      data,
+    const formData = await request.formData();
+    const id = formData.get('id') as string;
+    const title = formData.get('title') as string;
+    const description = formData.get('description') as string;
+    const image = formData.get('image') as File | null;
+
+    if (!id) {
+      return NextResponse.json({ error: 'Service ID is required' }, { status: 400 });
+    }
+
+    // Find existing service
+    const existingService = await prisma.service.findUnique({
+      where: { id }
     });
 
-    return NextResponse.json(service);
+    if (!existingService) {
+      return NextResponse.json({ error: 'Service not found' }, { status: 404 });
+    }
+
+    let imageUrl = existingService.imageUrl; // Keep existing image by default
+
+    // Handle new image upload if provided
+    if (image && image.size > 0) {
+      // Delete old image if it exists
+      if (existingService.imageUrl) {
+        const oldImagePath = join(process.cwd(), 'public', existingService.imageUrl);
+        try {
+          await unlink(oldImagePath);
+        } catch (error) {
+          console.error('Error deleting old image:', error);
+        }
+      }
+
+      // Save new image
+      const bytes = await image.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+      const fileName = `${Date.now()}-${image.name}`;
+      const imageSavePath = join(process.cwd(), 'public', 'uploads', fileName);
+      await writeFile(imageSavePath, buffer);
+      imageUrl = `/uploads/${fileName}`;
+    }
+
+    // Update service
+    const updatedService = await prisma.service.update({
+      where: { id },
+      data: {
+        title,
+        description,
+        imageUrl,
+      }
+    });
+
+    return NextResponse.json(updatedService);
   } catch (error) {
+    console.error('Error updating service:', error);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: 'Error updating service' },
       { status: 500 }
     );
   }

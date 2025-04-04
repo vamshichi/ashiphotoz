@@ -1,15 +1,14 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { validateAndConvertCategory } from "@/app/utils/categoryUtils";
 
-// Valid categories
-const VALID_CATEGORIES = [
+const VIDEO_CATEGORIES = [
   "Wedding Videos",
   "Pre-Wedding Videos",
-  "Housewarming Videos"
+  "Housewarming Videos",
+  "Birthday Videos",
+  "Corporate Videos",
+  "Other"
 ] as const;
-
-type VideoCategory = typeof VALID_CATEGORIES[number];
 
 // Get all videos
 export async function GET() {
@@ -19,7 +18,6 @@ export async function GET() {
         createdAt: "desc",
       },
     });
-
     return NextResponse.json(videos);
   } catch (error) {
     console.error("Error fetching videos:", error);
@@ -34,29 +32,31 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    console.log("Received request body:", body); // Debug log
-
     const { title, description, url, category } = body;
 
-    // Validate required fields
-    if (!title || !url) {
+    if (!title || !url || !category) {
       return NextResponse.json(
-        { error: "Title and URL are required" },
+        { error: "Title, URL, and category are required" },
         { status: 400 }
       );
     }
 
-    // Create video with all fields including category
+    if (!VIDEO_CATEGORIES.includes(category)) {
+      return NextResponse.json(
+        { error: "Invalid category" },
+        { status: 400 }
+      );
+    }
+
     const video = await prisma.video.create({
       data: {
         title,
         description: description || "",
         url,
-        category: category || "Wedding Videos", // Make sure category is included
+        category,
       },
     });
 
-    console.log("Created video:", video); // Debug log
     return NextResponse.json(video);
   } catch (error) {
     console.error("Error creating video:", error);
@@ -68,40 +68,58 @@ export async function POST(request: Request) {
 }
 
 // Update a video
-export async function PUT(req: Request) {
+export async function PUT(request: Request) {
   try {
-    const { id, ...data } = await req.json();
-    
-    // Validate and convert category if provided
-    if (data.category) {
-      try {
-        data.category = validateAndConvertCategory(data.category);
-      } catch (error) {
-        return NextResponse.json(
-          { error: error instanceof Error ? error.message : "Invalid category" },
-          { status: 400 }
-        );
-      }
+    const data = await request.json();
+    const { id, title, url, category } = data;
+
+    if (!id || !title || !url || !category) {
+      return NextResponse.json({ 
+        error: "Missing required fields" 
+      }, { status: 400 });
     }
 
-    const video = await prisma.video.update({
-      where: { id },
-      data,
+    // Validate category
+    if (!['YOUTUBE', 'IMAGE'].includes(category)) {
+      return NextResponse.json({ 
+        error: "Invalid category" 
+      }, { status: 400 });
+    }
+
+    // Check if video exists
+    const existingVideo = await prisma.video.findUnique({
+      where: { id }
     });
 
-    return NextResponse.json(video);
+    if (!existingVideo) {
+      return NextResponse.json({ 
+        error: "Video not found" 
+      }, { status: 404 });
+    }
+
+    // Update video
+    const updatedVideo = await prisma.video.update({
+      where: { id },
+      data: {
+        title,
+        url,
+        category
+      }
+    });
+
+    return NextResponse.json(updatedVideo);
   } catch (error) {
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    console.error('Error updating video:', error);
+    return NextResponse.json({ 
+      error: "Failed to update video" 
+    }, { status: 500 });
   }
 }
 
 // Delete a video
-export async function DELETE(req: Request) {
+export async function DELETE(request: Request) {
   try {
-    const { searchParams } = new URL(req.url);
+    const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
 
     if (!id) {
@@ -117,8 +135,9 @@ export async function DELETE(req: Request) {
 
     return NextResponse.json({ message: "Video deleted successfully" });
   } catch (error) {
+    console.error("Error deleting video:", error);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: "Failed to delete video" },
       { status: 500 }
     );
   }
