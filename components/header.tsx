@@ -62,10 +62,10 @@ export default function Header() {
               <span className="sr-only">Toggle menu</span>
             </Button>
           </SheetTrigger>
-          <SheetContent side="right" className="w-[85%] max-w-[380px] sm:w-[400px] bg-white dark:bg-gray-900">
-  <div className="sr-only">
-    <h2>Navigation Menu</h2>
-  </div>
+          <SheetContent className="w-[85%] max-w-[380px] sm:w-[400px] bg-white dark:bg-gray-900">
+            <div className="sr-only">
+              <h2>Navigation Menu</h2>
+            </div>
 
             <nav className="flex flex-col gap-4 mt-4">
               {navigation.map((item) => (
