@@ -1,26 +1,32 @@
 "use client";
 
 import { useState } from "react";
+import { toast } from "react-hot-toast";
+
+interface ServiceFormData {
+  title: string;
+  description: string;
+  image: File | null;
+}
 
 export default function ServiceForm() {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<ServiceFormData>({
     title: "",
     description: "",
-    price: "",
-    image: null as File | null,
+    image: null,
   });
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setFormData({ ...formData, image: file });
+      setFormData(prev => ({ ...prev, image: file }));
       setPreviewUrl(URL.createObjectURL(file));
     }
   };
@@ -28,21 +34,19 @@ export default function ServiceForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setMessage(null);
 
     try {
-      const submitData = new FormData();
-      submitData.append("title", formData.title);
-      submitData.append("description", formData.description);
-      submitData.append("price", formData.price);
+      const formDataToSend = new FormData();
+      formDataToSend.append("title", formData.title);
+      formDataToSend.append("description", formData.description);
       
       if (formData.image) {
-        submitData.append("image", formData.image);
+        formDataToSend.append("image", formData.image);
       }
 
       const response = await fetch("/api/admin/services", {
         method: "POST",
-        body: submitData,
+        body: formDataToSend,
       });
 
       const data = await response.json();
@@ -51,111 +55,92 @@ export default function ServiceForm() {
         throw new Error(data.error || "Failed to create service");
       }
 
+      toast.success("Service added successfully!");
+      
       // Reset form
-      setFormData({ title: "", description: "", price: "", image: null });
-      setPreviewUrl(null);
-      setMessage({ type: 'success', text: 'Service added successfully!' });
-    } catch (err) {
-      setMessage({ 
-        type: 'error', 
-        text: err instanceof Error ? err.message : "Something went wrong" 
+      setFormData({
+        title: "",
+        description: "",
+        image: null,
       });
+      setPreviewUrl(null);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to add service");
+      console.error("Error adding service:", err);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6">Add New Service</h1>
+    <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md">
+      <div>
+        <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+          Title
+        </label>
+        <input
+          type="text"
+          id="title"
+          name="title"
+          required
+          value={formData.title}
+          onChange={handleChange}
+          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-red-500 focus:outline-none focus:ring-red-500 sm:text-sm"
+          placeholder="Enter service title"
+        />
+      </div>
 
-      {message && (
-        <div className={`p-4 rounded-md mb-4 ${
-          message.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
-        }`}>
-          {message.text}
-        </div>
-      )}
+      <div>
+        <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+          Description
+        </label>
+        <textarea
+          id="description"
+          name="description"
+          required
+          value={formData.description}
+          onChange={handleChange}
+          rows={4}
+          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-red-500 focus:outline-none focus:ring-red-500 sm:text-sm"
+          placeholder="Enter service description"
+        />
+      </div>
 
-      <form onSubmit={handleSubmit} className="max-w-2xl space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Title
-          </label>
-          <input
-            type="text"
-            name="title"
-            value={formData.title}
-            onChange={handleChange}
-            className="w-full p-2 border rounded-md"
-            required
-            placeholder="Enter service title"
-          />
-        </div>
+      <div>
+        <label htmlFor="image" className="block text-sm font-medium text-gray-700">
+          Service Image
+        </label>
+        <input
+          type="file"
+          id="image"
+          name="image"
+          accept="image/*"
+          onChange={handleImageChange}
+          className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100"
+          required
+        />
+        {previewUrl && (
+          <div className="mt-2">
+            <img 
+              src={previewUrl} 
+              alt="Preview" 
+              className="w-32 h-32 object-cover rounded-md"
+            />
+          </div>
+        )}
+      </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Description
-          </label>
-          <textarea
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            className="w-full p-2 border rounded-md"
-            rows={4}
-            required
-            placeholder="Enter service description"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Price
-          </label>
-          <input
-            type="text"
-            name="price"
-            value={formData.price}
-            onChange={handleChange}
-            className="w-full p-2 border rounded-md"
-            required
-            placeholder="Enter service price"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Service Image
-          </label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-            className="w-full p-2 border rounded-md"
-            required
-          />
-          {previewUrl && (
-            <div className="mt-2">
-              <img 
-                src={previewUrl} 
-                alt="Preview" 
-                className="w-32 h-32 object-cover rounded-md"
-              />
-              <p className="text-sm text-gray-500 mt-1">
-                Selected: {formData.image?.name}
-              </p>
-            </div>
-          )}
-        </div>
-
+      <div>
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:bg-gray-400"
+          className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 ${
+            loading ? 'opacity-50 cursor-not-allowed' : ''
+          }`}
         >
-          {loading ? "Adding..." : "Add Service"}
+          {loading ? 'Adding Service...' : 'Add Service'}
         </button>
-      </form>
-    </div>
+      </div>
+    </form>
   );
 } 

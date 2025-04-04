@@ -2,6 +2,15 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { validateAndConvertCategory } from "@/app/utils/categoryUtils";
 
+// Valid categories
+const VALID_CATEGORIES = [
+  "Wedding Videos",
+  "Pre-Wedding Videos",
+  "Housewarming Videos"
+] as const;
+
+type VideoCategory = typeof VALID_CATEGORIES[number];
+
 // Get all videos
 export async function GET() {
   try {
@@ -11,13 +20,7 @@ export async function GET() {
       },
     });
 
-    // Transform videos to ensure description is never null
-    const transformedVideos = videos.map(video => ({
-      ...video,
-      description: video.description || ""
-    }));
-
-    return NextResponse.json(transformedVideos);
+    return NextResponse.json(videos);
   } catch (error) {
     console.error("Error fetching videos:", error);
     return NextResponse.json(
@@ -31,31 +34,29 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { title, description, url } = body;
+    console.log("Received request body:", body); // Debug log
+
+    const { title, description, url, category } = body;
 
     // Validate required fields
-    if (!title) {
+    if (!title || !url) {
       return NextResponse.json(
-        { error: "Title is required" },
+        { error: "Title and URL are required" },
         { status: 400 }
       );
     }
 
-    if (!url) {
-      return NextResponse.json(
-        { error: "URL is required" },
-        { status: 400 }
-      );
-    }
-
+    // Create video with all fields including category
     const video = await prisma.video.create({
       data: {
         title,
-        description: description || "", // Provide empty string if description is null
+        description: description || "",
         url,
+        category: category || "Wedding Videos", // Make sure category is included
       },
     });
 
+    console.log("Created video:", video); // Debug log
     return NextResponse.json(video);
   } catch (error) {
     console.error("Error creating video:", error);

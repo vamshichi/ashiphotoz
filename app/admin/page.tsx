@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { useState, useEffect } from "react"
 import { PrismaClient } from "@prisma/client/edge"
 
@@ -58,480 +59,101 @@ interface Testimonial {
 }
 
 export default function AdminPage() {
-  const [activeTab, setActiveTab] = useState("videos")
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState("")
-
-  // Form states
-  const [videoForm, setVideoForm] = useState<Partial<Video>>({})
-  const [portfolioForm, setPortfolioForm] = useState<Partial<PortfolioItem>>({})
-  const [serviceForm, setServiceForm] = useState<Partial<Service>>({})
-  const [testimonialForm, setTestimonialForm] = useState<Partial<Testimonial>>({})
-
-  // Data states
-  const [videos, setVideos] = useState<Video[]>([])
-  const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([])
-  const [services, setServices] = useState<Service[]>([])
-  const [testimonials, setTestimonials] = useState<Testimonial[]>([])
-
-  useEffect(() => {
-    fetchData()
-  }, [])
-
-  const fetchData = async () => {
-    try {
-      const [videosRes, portfolioRes, servicesRes, testimonialsRes] = await Promise.all([
-        fetch("/api/admin/videos"),
-        fetch("/api/admin/portfolio"),
-        fetch("/api/admin/services"),
-        fetch("/api/admin/testimonials"),
-      ])
-
-      if (videosRes.ok) setVideos(await videosRes.json())
-      if (portfolioRes.ok) setPortfolioItems(await portfolioRes.json())
-      if (servicesRes.ok) setServices(await servicesRes.json())
-      if (testimonialsRes.ok) setTestimonials(await testimonialsRes.json())
-    } catch (error) {
-      console.error("Failed to fetch data:", error)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const handleSubmit = async (e: React.FormEvent, type: string) => {
-    e.preventDefault()
-    try {
-      let response
-      switch (type) {
-        case "videos":
-          response = await fetch("/api/admin/videos", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(videoForm),
-          })
-          if (response.ok) {
-            const newVideo = await response.json()
-            setVideos([...videos, newVideo])
-            setVideoForm({})
-          }
-          break
-
-        case "portfolio":
-          response = await fetch("/api/admin/portfolio", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(portfolioForm),
-          })
-          if (response.ok) {
-            const newItem = await response.json()
-            setPortfolioItems([...portfolioItems, newItem])
-            setPortfolioForm({})
-          }
-          break
-
-        case "services":
-          response = await fetch("/api/admin/services", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(serviceForm),
-          })
-          if (response.ok) {
-            const newService = await response.json()
-            setServices([...services, newService])
-            setServiceForm({})
-          }
-          break
-
-        case "testimonials":
-          response = await fetch("/api/admin/testimonials", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(testimonialForm),
-          })
-          if (response.ok) {
-            const newTestimonial = await response.json()
-            setTestimonials([...testimonials, newTestimonial])
-            setTestimonialForm({})
-          }
-          break
-      }
-    } catch (error) {
-      console.error("Failed to submit:", error)
-    }
-  }
-
-  const handleDelete = async (id: string, type: string) => {
-    try {
-      const response = await fetch(`/api/admin/${type}?id=${id}`, {
-        method: "DELETE",
-      })
-
-      if (response.ok) {
-        switch (type) {
-          case "videos":
-            setVideos(videos.filter((v) => v.id !== id))
-            break
-          case "portfolio":
-            setPortfolioItems(portfolioItems.filter((p) => p.id !== id))
-            break
-          case "services":
-            setServices(services.filter((s) => s.id !== id))
-            break
-          case "testimonials":
-            setTestimonials(testimonials.filter((t) => t.id !== id))
-            break
-        }
-      }
-    } catch (error) {
-      console.error("Failed to delete:", error)
-    }
-  }
-
-  if (loading) {
-    return <div className="p-4">Loading...</div>
-  }
-
   return (
-    <div className="admin-container">
-      <div className="admin-tabs">
-        <button
-          className={`admin-tab ${activeTab === "videos" ? "active" : ""}`}
-          onClick={() => setActiveTab("videos")}
-        >
-          Videos
-        </button>
-        <button
-          className={`admin-tab ${activeTab === "portfolio" ? "active" : ""}`}
-          onClick={() => setActiveTab("portfolio")}
-        >
-          Portfolio
-        </button>
-        <button
-          className={`admin-tab ${activeTab === "services" ? "active" : ""}`}
-          onClick={() => setActiveTab("services")}
-        >
-          Services
-        </button>
-        <button
-          className={`admin-tab ${activeTab === "testimonials" ? "active" : ""}`}
-          onClick={() => setActiveTab("testimonials")}
-        >
-          Testimonials
-        </button>
-      </div>
-
-      {activeTab === "videos" && (
-        <div className="admin-form">
-          <h2 className="text-xl font-semibold mb-4">Add New Video</h2>
-          <form onSubmit={(e) => handleSubmit(e, "videos")} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium">Title</label>
-              <input
-                type="text"
-                value={videoForm.title || ""}
-                onChange={(e) =>
-                  setVideoForm({ ...videoForm, title: e.target.value })
-                }
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium">Category</label>
-              <select
-                value={videoForm.category || ""}
-                onChange={(e) =>
-                  setVideoForm({ ...videoForm, category: e.target.value as ContentType })
-                }
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                required
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-8">Admin Dashboard</h1>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* Videos Card */}
+          <Link href="/admin/videos" 
+                className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+            <div className="flex flex-col items-center text-center">
+              <svg 
+                className="w-12 h-12 text-red-600 mb-4" 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
               >
-                <option value="">Select category</option>
-                {Object.values(ContentType).map((type) => (
-                  <option
-                    key={type}
-                    value={type}
-                  >
-                    {type.charAt(0).toUpperCase() + type.slice(1).toLowerCase()}
-                  </option>
-                ))}
-              </select>
+                <path 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  strokeWidth={2} 
+                  d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" 
+                />
+              </svg>
+              <h2 className="text-xl font-semibold text-gray-900 mb-2">Videos</h2>
+              <p className="text-gray-600">Manage your video content</p>
             </div>
-            <div>
-              <label className="block text-sm font-medium">URL</label>
-              <input
-                type="url"
-                value={videoForm.url || ""}
-                onChange={(e) =>
-                  setVideoForm({ ...videoForm, url: e.target.value })
-                }
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium">Description</label>
-              <textarea
-                value={videoForm.description || ""}
-                onChange={(e) =>
-                  setVideoForm({ ...videoForm, description: e.target.value })
-                }
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium">Thumbnail URL</label>
-              <input
-                type="url"
-                value={videoForm.thumbnail || ""}
-                onChange={(e) =>
-                  setVideoForm({ ...videoForm, thumbnail: e.target.value })
-                }
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-              />
-            </div>
-            <button
-              type="submit"
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-            >
-              Add Video
-            </button>
-          </form>
-        </div>
-      )}
+          </Link>
 
-      {activeTab === "portfolio" && (
-        <div className="admin-form">
-          <h2 className="text-xl font-semibold mb-4">Add New Portfolio Item</h2>
-          <form onSubmit={(e) => handleSubmit(e, "portfolio")} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium">Title</label>
-              <input
-                type="text"
-                value={portfolioForm.title || ""}
-                onChange={(e) =>
-                  setPortfolioForm({ ...portfolioForm, title: e.target.value })
-                }
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                required
-              />
+          {/* Portfolio Card */}
+          <Link href="/admin/portfolio" 
+                className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+            <div className="flex flex-col items-center text-center">
+              <svg 
+                className="w-12 h-12 text-red-600 mb-4" 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  strokeWidth={2} 
+                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" 
+                />
+              </svg>
+              <h2 className="text-xl font-semibold text-gray-900 mb-2">Portfolio</h2>
+              <p className="text-gray-600">Manage your portfolio items</p>
             </div>
-            <div>
-              <label className="block text-sm font-medium">Description</label>
-              <textarea
-                value={portfolioForm.description || ""}
-                onChange={(e) =>
-                  setPortfolioForm({ ...portfolioForm, description: e.target.value })
-                }
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium">Image URL</label>
-              <input
-                type="url"
-                value={portfolioForm.imageUrl || ""}
-                onChange={(e) =>
-                  setPortfolioForm({ ...portfolioForm, imageUrl: e.target.value })
-                }
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                required
-              />
-            </div>
-            <button
-              type="submit"
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-            >
-              Add Portfolio Item
-            </button>
-          </form>
-        </div>
-      )}
+          </Link>
 
-      {activeTab === "services" && (
-        <div className="admin-form">
-          <h2 className="text-xl font-semibold mb-4">Add New Service</h2>
-          <form onSubmit={(e) => handleSubmit(e, "services")} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium">Name</label>
-              <input
-                type="text"
-                value={serviceForm.name || ""}
-                onChange={(e) =>
-                  setServiceForm({ ...serviceForm, name: e.target.value })
-                }
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                required
-              />
+          {/* Services Card */}
+          <Link href="/admin/services" 
+                className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+            <div className="flex flex-col items-center text-center">
+              <svg 
+                className="w-12 h-12 text-red-600 mb-4" 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  strokeWidth={2} 
+                  d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" 
+                />
+              </svg>
+              <h2 className="text-xl font-semibold text-gray-900 mb-2">Services</h2>
+              <p className="text-gray-600">Manage your services</p>
             </div>
-            <div>
-              <label className="block text-sm font-medium">Description</label>
-              <textarea
-                value={serviceForm.description || ""}
-                onChange={(e) =>
-                  setServiceForm({ ...serviceForm, description: e.target.value })
-                }
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium">Price</label>
-              <input
-                type="number"
-                value={serviceForm.price || ""}
-                onChange={(e) =>
-                  setServiceForm({ ...serviceForm, price: Number(e.target.value) })
-                }
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-              />
-            </div>
-            <button
-              type="submit"
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-            >
-              Add Service
-            </button>
-          </form>
-        </div>
-      )}
+          </Link>
 
-      {activeTab === "testimonials" && (
-        <div className="admin-form">
-          <h2 className="text-xl font-semibold mb-4">Add New Testimonial</h2>
-          <form onSubmit={(e) => handleSubmit(e, "testimonials")} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium">Name</label>
-              <input
-                type="text"
-                value={testimonialForm.name || ""}
-                onChange={(e) =>
-                  setTestimonialForm({ ...testimonialForm, name: e.target.value })
-                }
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                required
-              />
+          {/* Testimonials Card */}
+          <Link href="/admin/testimonials" 
+                className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+            <div className="flex flex-col items-center text-center">
+              <svg 
+                className="w-12 h-12 text-red-600 mb-4" 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  strokeWidth={2} 
+                  d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" 
+                />
+              </svg>
+              <h2 className="text-xl font-semibold text-gray-900 mb-2">Testimonials</h2>
+              <p className="text-gray-600">Manage your testimonials</p>
             </div>
-            <div>
-              <label className="block text-sm font-medium">Feedback</label>
-              <textarea
-                value={testimonialForm.feedback || ""}
-                onChange={(e) =>
-                  setTestimonialForm({ ...testimonialForm, feedback: e.target.value })
-                }
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium">Rating</label>
-              <input
-                type="number"
-                min="1"
-                max="5"
-                value={testimonialForm.rating || ""}
-                onChange={(e) =>
-                  setTestimonialForm({ ...testimonialForm, rating: Number(e.target.value) })
-                }
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                required
-              />
-            </div>
-            <button
-              type="submit"
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-            >
-              Add Testimonial
-            </button>
-          </form>
+          </Link>
         </div>
-      )}
-
-      {/* List sections */}
-      {activeTab === "videos" && (
-        <div className="admin-list">
-          {videos.map((video) => (
-            <div key={video.id} className="admin-list-item">
-              <div className="flex justify-between items-center">
-                <div>
-                  <h3 className="text-lg font-medium">{video.title}</h3>
-                  <p className="text-gray-600">{video.description}</p>
-                </div>
-                <div className="admin-actions">
-                  <button className="edit">Edit</button>
-                  <button className="delete" onClick={() => handleDelete(video.id, "videos")}>
-                    Delete
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {activeTab === "portfolio" && (
-        <div className="admin-list">
-          {portfolioItems.map((item) => (
-            <div key={item.id} className="admin-list-item">
-              <div className="flex justify-between items-center">
-                <div>
-                  <h3 className="text-lg font-medium">{item.title}</h3>
-                  <p className="text-gray-600">{item.description}</p>
-                </div>
-                <div className="admin-actions">
-                  <button className="edit">Edit</button>
-                  <button className="delete" onClick={() => handleDelete(item.id, "portfolio")}>
-                    Delete
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {activeTab === "services" && (
-        <div className="admin-list">
-          {services.map((service) => (
-            <div key={service.id} className="admin-list-item">
-              <div className="flex justify-between items-center">
-                <div>
-                  <h3 className="text-lg font-medium">{service.name}</h3>
-                  <p className="text-gray-600">{service.description}</p>
-                </div>
-                <div className="admin-actions">
-                  <button className="edit">Edit</button>
-                  <button className="delete" onClick={() => handleDelete(service.id, "services")}>
-                    Delete
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {activeTab === "testimonials" && (
-        <div className="admin-list">
-          {testimonials.map((testimonial) => (
-            <div key={testimonial.id} className="admin-list-item">
-              <div className="flex justify-between items-center">
-                <div>
-                  <h3 className="text-lg font-medium">{testimonial.name}</h3>
-                  <p className="text-gray-600">{testimonial.feedback}</p>
-                </div>
-                <div className="admin-actions">
-                  <button className="edit">Edit</button>
-                  <button className="delete" onClick={() => handleDelete(testimonial.id, "testimonials")}>
-                    Delete
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+      </div>
     </div>
   )
 }

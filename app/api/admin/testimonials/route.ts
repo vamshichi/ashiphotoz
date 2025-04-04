@@ -10,13 +10,7 @@ export async function GET() {
       }
     });
 
-    // Transform testimonials to ensure content is never null
-    const transformedTestimonials = testimonials.map(testimonial => ({
-      ...testimonial,
-      content: testimonial.content || ""
-    }));
-
-    return NextResponse.json(transformedTestimonials);
+    return NextResponse.json(testimonials);
   } catch (error) {
     console.error("Error fetching testimonials:", error);
     return NextResponse.json(
@@ -30,6 +24,8 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
+    console.log('Received body:', body); // Debug log
+
     const { name, content, rating } = body;
 
     // Validate required fields
@@ -40,9 +36,11 @@ export async function POST(request: Request) {
       );
     }
 
-    if (!rating) {
+    // Ensure rating is a valid number
+    const parsedRating = parseInt(rating);
+    if (isNaN(parsedRating) || parsedRating < 1 || parsedRating > 5) {
       return NextResponse.json(
-        { error: "Rating is required" },
+        { error: "Rating must be a number between 1 and 5" },
         { status: 400 }
       );
     }
@@ -51,13 +49,19 @@ export async function POST(request: Request) {
       data: {
         name,
         content: content || "", // Provide empty string if content is null
-        rating,
+        rating: parsedRating, // Use the parsed rating
       },
     });
 
     return NextResponse.json(testimonial);
   } catch (error) {
     console.error("Error creating testimonial:", error);
+    if (error instanceof SyntaxError) {
+      return NextResponse.json(
+        { error: "Invalid JSON data provided" },
+        { status: 400 }
+      );
+    }
     return NextResponse.json(
       { error: "Failed to create testimonial" },
       { status: 500 }
@@ -69,6 +73,19 @@ export async function POST(request: Request) {
 export async function PUT(req: Request) {
   try {
     const { id, ...data } = await req.json();
+    
+    // Ensure rating is a valid number if provided
+    if (data.rating !== undefined) {
+      const parsedRating = parseInt(data.rating);
+      if (isNaN(parsedRating) || parsedRating < 1 || parsedRating > 5) {
+        return NextResponse.json(
+          { error: "Rating must be a number between 1 and 5" },
+          { status: 400 }
+        );
+      }
+      data.rating = parsedRating;
+    }
+
     const testimonial = await prisma.testimonial.update({
       where: { id },
       data,
@@ -76,8 +93,15 @@ export async function PUT(req: Request) {
 
     return NextResponse.json(testimonial);
   } catch (error) {
+    console.error("Error updating testimonial:", error);
+    if (error instanceof SyntaxError) {
+      return NextResponse.json(
+        { error: "Invalid JSON data provided" },
+        { status: 400 }
+      );
+    }
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: "Failed to update testimonial" },
       { status: 500 }
     );
   }
@@ -102,8 +126,9 @@ export async function DELETE(req: Request) {
 
     return NextResponse.json({ message: "Testimonial deleted successfully" });
   } catch (error) {
+    console.error("Error deleting testimonial:", error);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: "Failed to delete testimonial" },
       { status: 500 }
     );
   }
