@@ -10,7 +10,8 @@ export async function fetchData(model: string, id?: string) {
   return response.json();
 }
 
-export async function createData(model: string, data: any) {
+export async function createData<T>(model: string, data: T)
+{
   const response = await fetch(`${API_BASE_URL}/data`, {
     method: 'POST',
     headers: {

@@ -31,6 +31,19 @@ interface PortfolioItem {
   createdAt: string
 }
 
+// Define a type for form data
+type VideoFormData = {
+  title: string
+  category: string
+  url: string
+}
+
+type PortfolioFormData = {
+  title: string
+  description: string
+  imageUrl: string
+}
+
 // Helper function to extract YouTube video ID
 function getYouTubeVideoId(url: string): string | null {
   const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/
@@ -44,7 +57,7 @@ export default function AdminPage() {
   const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [currentItem, setCurrentItem] = useState<any>(null)
+  const [currentItem, setCurrentItem] = useState<Video | PortfolioItem | null>(null)
   const [isEditing, setIsEditing] = useState(false)
   const [previewDialogOpen, setPreviewDialogOpen] = useState(false)
   const [previewContent, setPreviewContent] = useState<{ type: "video" | "image"; src: string }>({
@@ -53,8 +66,8 @@ export default function AdminPage() {
   })
 
   // Form states for each model
-  const [videoForm, setVideoForm] = useState({ title: "", category: "", url: "" })
-  const [portfolioForm, setPortfolioForm] = useState({
+  const [videoForm, setVideoForm] = useState<VideoFormData>({ title: "", category: "", url: "" })
+  const [portfolioForm, setPortfolioForm] = useState<PortfolioFormData>({
     title: "",
     description: "",
     imageUrl: "",
@@ -89,7 +102,7 @@ export default function AdminPage() {
     }
   }
 
-  const handleCreate = async (model: string, data: any) => {
+  const handleCreate = async (model: string, data: VideoFormData | PortfolioFormData) => {
     try {
       const response = await fetch("/api", {
         method: "POST",
@@ -113,7 +126,7 @@ export default function AdminPage() {
     }
   }
 
-  const handleUpdate = async (model: string, id: string, data: any) => {
+  const handleUpdate = async (model: string, id: string, data: VideoFormData | PortfolioFormData) => {
     try {
       const response = await fetch("/api", {
         method: "PUT",
@@ -166,23 +179,23 @@ export default function AdminPage() {
     setPortfolioForm({ title: "", description: "", imageUrl: "" })
   }
 
-  const openEditDialog = (model: string, item: any) => {
+  const openEditDialog = (model: string, item: Video | PortfolioItem) => {
     setCurrentItem(item)
     setIsEditing(true)
 
     switch (model) {
       case "video":
         setVideoForm({
-          title: item.title,
-          category: item.category,
-          url: item.url,
+          title: (item as Video).title,
+          category: (item as Video).category,
+          url: (item as Video).url,
         })
         break
       case "portfolio":
         setPortfolioForm({
-          title: item.title,
-          description: item.description,
-          imageUrl: item.imageUrl,
+          title: (item as PortfolioItem).title,
+          description: (item as PortfolioItem).description,
+          imageUrl: (item as PortfolioItem).imageUrl,
         })
         break
     }
@@ -332,7 +345,7 @@ export default function AdminPage() {
                   <TableHeader>
                     <TableRow>
                       <TableHead>Title</TableHead>
-                      <TableHead>Category</TableHead>
+                      <TableHead>Description</TableHead>
                       <TableHead>Image</TableHead>
                       <TableHead>Created At</TableHead>
                       <TableHead className="text-right">Actions</TableHead>
@@ -461,12 +474,13 @@ export default function AdminPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label htmlFor="category">Category</label>
-                  <Input
-                    id="category"
+                  <label htmlFor="description">Description</label>
+                  <Textarea
+                    id="description"
                     value={portfolioForm.description}
                     onChange={(e) => setPortfolioForm({ ...portfolioForm, description: e.target.value })}
                     required
+                    rows={3}
                   />
                 </div>
                 <div className="space-y-2">
