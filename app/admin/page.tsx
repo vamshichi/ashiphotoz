@@ -23,34 +23,11 @@ interface Video {
   createdAt: string
 }
 
-interface Service {
-  id: string
-  name: string
-  description: string
-  createdAt: string
-}
-
 interface PortfolioItem {
   id: string
   title: string
   description: string
   imageUrl: string
-  createdAt: string
-}
-
-interface Testimonial {
-  id: string
-  name: string
-  feedback: string
-  rating: number
-  createdAt: string
-}
-
-interface Contact {
-  id: string
-  name: string
-  email: string
-  message: string
   createdAt: string
 }
 
@@ -64,10 +41,7 @@ function getYouTubeVideoId(url: string): string | null {
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState("videos")
   const [videos, setVideos] = useState<Video[]>([])
-  const [services, setServices] = useState<Service[]>([])
   const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([])
-  const [testimonials, setTestimonials] = useState<Testimonial[]>([])
-  const [contacts, setContacts] = useState<Contact[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [currentItem, setCurrentItem] = useState<any>(null)
@@ -80,13 +54,11 @@ export default function AdminPage() {
 
   // Form states for each model
   const [videoForm, setVideoForm] = useState({ title: "", category: "", url: "" })
-  const [serviceForm, setServiceForm] = useState({ name: "", description: "" })
   const [portfolioForm, setPortfolioForm] = useState({
     title: "",
     description: "",
     imageUrl: "",
   })
-  const [testimonialForm, setTestimonialForm] = useState({ name: "", feedback: "", rating: 5 })
 
   useEffect(() => {
     fetchData()
@@ -96,13 +68,9 @@ export default function AdminPage() {
     setIsLoading(true)
     try {
       const videoRes = await fetch("/api?model=video")
-      const serviceRes = await fetch("/api?model=service")
       const portfolioRes = await fetch("/api?model=portfolio")
-      const testimonialRes = await fetch("/api?model=testimonial")
-      const contactRes = await fetch("/api?model=contact")
 
       const videoData = await videoRes.json()
-      const serviceData = await serviceRes.json()
       let portfolioData = { data: [] }
 
       try {
@@ -111,14 +79,8 @@ export default function AdminPage() {
         console.error("Error parsing portfolio data:", error)
       }
 
-      const testimonialData = await testimonialRes.json()
-      const contactData = await contactRes.json()
-
       setVideos(videoData.data || [])
-      setServices(serviceData.data || [])
       setPortfolioItems(portfolioData.data || [])
-      setTestimonials(testimonialData.data || [])
-      setContacts(contactData.data || [])
     } catch (error) {
       console.error("Error fetching data:", error)
       toast.error("Failed to fetch data")
@@ -201,9 +163,7 @@ export default function AdminPage() {
 
   const resetForms = () => {
     setVideoForm({ title: "", category: "", url: "" })
-    setServiceForm({ name: "", description: "" })
     setPortfolioForm({ title: "", description: "", imageUrl: "" })
-    setTestimonialForm({ name: "", feedback: "", rating: 5 })
   }
 
   const openEditDialog = (model: string, item: any) => {
@@ -218,24 +178,11 @@ export default function AdminPage() {
           url: item.url,
         })
         break
-      case "service":
-        setServiceForm({
-          name: item.name,
-          description: item.description,
-        })
-        break
       case "portfolio":
         setPortfolioForm({
           title: item.title,
           description: item.description,
           imageUrl: item.imageUrl,
-        })
-        break
-      case "testimonial":
-        setTestimonialForm({
-          name: item.name,
-          feedback: item.feedback,
-          rating: item.rating,
         })
         break
     }
@@ -260,17 +207,9 @@ export default function AdminPage() {
         model = "video"
         data = videoForm
         break
-      case "services":
-        model = "service"
-        data = serviceForm
-        break
       case "portfolio":
         model = "portfolio"
         data = portfolioForm
-        break
-      case "testimonials":
-        model = "testimonial"
-        data = testimonialForm
         break
       default:
         return
@@ -301,17 +240,12 @@ export default function AdminPage() {
         <div className="flex justify-between items-center mb-6">
           <TabsList>
             <TabsTrigger value="videos">Videos</TabsTrigger>
-            <TabsTrigger value="services">Services</TabsTrigger>
             <TabsTrigger value="portfolio">Portfolio</TabsTrigger>
-            <TabsTrigger value="testimonials">Testimonials</TabsTrigger>
-            <TabsTrigger value="contacts">Contacts</TabsTrigger>
           </TabsList>
 
-          {activeTab !== "contacts" && (
-            <Button onClick={openCreateDialog}>
-              <Plus className="mr-2 h-4 w-4" /> Add New
-            </Button>
-          )}
+          <Button onClick={openCreateDialog}>
+            <Plus className="mr-2 h-4 w-4" /> Add New
+          </Button>
         </div>
 
         <TabsContent value="videos">
@@ -384,56 +318,6 @@ export default function AdminPage() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="services">
-          <Card>
-            <CardHeader>
-              <CardTitle>Services</CardTitle>
-              <CardDescription>Manage your services</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {isLoading ? (
-                <div className="text-center py-4">Loading...</div>
-              ) : (
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Description</TableHead>
-                      <TableHead>Created At</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {services.length === 0 ? (
-                      <TableRow>
-                        <TableCell colSpan={4} className="text-center">
-                          No services found
-                        </TableCell>
-                      </TableRow>
-                    ) : (
-                      services.map((service) => (
-                        <TableRow key={service.id}>
-                          <TableCell>{service.name}</TableCell>
-                          <TableCell className="truncate max-w-[300px]">{service.description}</TableCell>
-                          <TableCell>{new Date(service.createdAt).toLocaleDateString()}</TableCell>
-                          <TableCell className="text-right">
-                            <Button variant="ghost" size="icon" onClick={() => openEditDialog("service", service)}>
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                            <Button variant="ghost" size="icon" onClick={() => handleDelete("service", service.id)}>
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      ))
-                    )}
-                  </TableBody>
-                </Table>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-
         <TabsContent value="portfolio">
           <Card>
             <CardHeader>
@@ -448,7 +332,7 @@ export default function AdminPage() {
                   <TableHeader>
                     <TableRow>
                       <TableHead>Title</TableHead>
-                      <TableHead>Description</TableHead>
+                      <TableHead>Category</TableHead>
                       <TableHead>Image</TableHead>
                       <TableHead>Created At</TableHead>
                       <TableHead className="text-right">Actions</TableHead>
@@ -493,115 +377,6 @@ export default function AdminPage() {
                               <Edit className="h-4 w-4" />
                             </Button>
                             <Button variant="ghost" size="icon" onClick={() => handleDelete("portfolio", item.id)}>
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      ))
-                    )}
-                  </TableBody>
-                </Table>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="testimonials">
-          <Card>
-            <CardHeader>
-              <CardTitle>Testimonials</CardTitle>
-              <CardDescription>Manage your testimonials</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {isLoading ? (
-                <div className="text-center py-4">Loading...</div>
-              ) : (
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Feedback</TableHead>
-                      <TableHead>Rating</TableHead>
-                      <TableHead>Created At</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {testimonials.length === 0 ? (
-                      <TableRow>
-                        <TableCell colSpan={5} className="text-center">
-                          No testimonials found
-                        </TableCell>
-                      </TableRow>
-                    ) : (
-                      testimonials.map((testimonial) => (
-                        <TableRow key={testimonial.id}>
-                          <TableCell>{testimonial.name}</TableCell>
-                          <TableCell className="truncate max-w-[300px]">{testimonial.feedback}</TableCell>
-                          <TableCell>{testimonial.rating}/5</TableCell>
-                          <TableCell>{new Date(testimonial.createdAt).toLocaleDateString()}</TableCell>
-                          <TableCell className="text-right">
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => openEditDialog("testimonial", testimonial)}
-                            >
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => handleDelete("testimonial", testimonial.id)}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      ))
-                    )}
-                  </TableBody>
-                </Table>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="contacts">
-          <Card>
-            <CardHeader>
-              <CardTitle>Contact Submissions</CardTitle>
-              <CardDescription>View contact form submissions</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {isLoading ? (
-                <div className="text-center py-4">Loading...</div>
-              ) : (
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Email</TableHead>
-                      <TableHead>Message</TableHead>
-                      <TableHead>Submitted At</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {contacts.length === 0 ? (
-                      <TableRow>
-                        <TableCell colSpan={5} className="text-center">
-                          No contact submissions found
-                        </TableCell>
-                      </TableRow>
-                    ) : (
-                      contacts.map((contact) => (
-                        <TableRow key={contact.id}>
-                          <TableCell>{contact.name}</TableCell>
-                          <TableCell>{contact.email}</TableCell>
-                          <TableCell className="truncate max-w-[300px]">{contact.message}</TableCell>
-                          <TableCell>{new Date(contact.createdAt).toLocaleDateString()}</TableCell>
-                          <TableCell className="text-right">
-                            <Button variant="ghost" size="icon" onClick={() => handleDelete("contact", contact.id)}>
                               <Trash2 className="h-4 w-4" />
                             </Button>
                           </TableCell>
@@ -674,30 +449,6 @@ export default function AdminPage() {
               </>
             )}
 
-            {activeTab === "services" && (
-              <>
-                <div className="space-y-2">
-                  <label htmlFor="name">Service Name</label>
-                  <Input
-                    id="name"
-                    value={serviceForm.name}
-                    onChange={(e) => setServiceForm({ ...serviceForm, name: e.target.value })}
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label htmlFor="description">Description</label>
-                  <Textarea
-                    id="description"
-                    value={serviceForm.description}
-                    onChange={(e) => setServiceForm({ ...serviceForm, description: e.target.value })}
-                    required
-                    rows={4}
-                  />
-                </div>
-              </>
-            )}
-
             {activeTab === "portfolio" && (
               <>
                 <div className="space-y-2">
@@ -710,13 +461,12 @@ export default function AdminPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label htmlFor="description">Description</label>
-                  <Textarea
-                    id="description"
+                  <label htmlFor="category">Category</label>
+                  <Input
+                    id="category"
                     value={portfolioForm.description}
                     onChange={(e) => setPortfolioForm({ ...portfolioForm, description: e.target.value })}
                     required
-                    rows={3}
                   />
                 </div>
                 <div className="space-y-2">
@@ -731,60 +481,22 @@ export default function AdminPage() {
                   />
                 </div>
                 {portfolioForm.imageUrl && (
-                   <div className="space-y-2">
-                     <label>Image Preview</label>
-                  <div className="relative aspect-video w-full max-h-[200px] overflow-hidden rounded-md border">
-                        <Image
-                          src={portfolioForm.imageUrl}
-                          alt="Preview"
-                          fill
-                          className="object-contain"
+                  <div className="space-y-2">
+                    <label>Image Preview</label>
+                    <div className="relative aspect-video w-full max-h-[200px] overflow-hidden rounded-md border">
+                      <Image
+                        src={portfolioForm.imageUrl || "/placeholder.svg"}
+                        alt="Preview"
+                        fill
+                        className="object-contain"
                         onError={(e) => {
-                         const target = e.target as HTMLImageElement;
-                       target.src = "/placeholder.svg?height=200&width=400"; // Handle image load error
-                         }}
-                         />
-                        </div>
-                          </div>
-                     )}
-              </>
-            )}
-
-            {activeTab === "testimonials" && (
-              <>
-                <div className="space-y-2">
-                  <label htmlFor="name">Name</label>
-                  <Input
-                    id="name"
-                    value={testimonialForm.name}
-                    onChange={(e) => setTestimonialForm({ ...testimonialForm, name: e.target.value })}
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label htmlFor="feedback">Feedback</label>
-                  <Textarea
-                    id="feedback"
-                    value={testimonialForm.feedback}
-                    onChange={(e) => setTestimonialForm({ ...testimonialForm, feedback: e.target.value })}
-                    required
-                    rows={3}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label htmlFor="rating">Rating (1-5)</label>
-                  <Input
-                    id="rating"
-                    type="number"
-                    min="1"
-                    max="5"
-                    value={testimonialForm.rating}
-                    onChange={(e) =>
-                      setTestimonialForm({ ...testimonialForm, rating: Number.parseInt(e.target.value, 10) })
-                    }
-                    required
-                  />
-                </div>
+                          const target = e.target as HTMLImageElement
+                          target.src = "/placeholder.svg?height=200&width=400" // Handle image load error
+                        }}
+                      />
+                    </div>
+                  </div>
+                )}
               </>
             )}
 

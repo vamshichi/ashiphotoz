@@ -19,17 +19,8 @@ export async function GET(request: NextRequest) {
       case "video":
         data = id ? await prisma.video.findUnique({ where: { id } }) : await prisma.video.findMany()
         break
-      case "service":
-        data = id ? await prisma.services.findUnique({ where: { id } }) : await prisma.services.findMany()
-        break
       case "portfolio":
         data = id ? await prisma.portfolioItem.findUnique({ where: { id } }) : await prisma.portfolioItem.findMany()
-        break
-      case "testimonial":
-        data = id ? await prisma.testimonial.findUnique({ where: { id } }) : await prisma.testimonial.findMany()
-        break
-      case "contact":
-        data = id ? await prisma.contact.findUnique({ where: { id } }) : await prisma.contact.findMany()
         break
       default:
         return NextResponse.json({ error: "Invalid model" }, { status: 400 })
@@ -56,17 +47,9 @@ export async function POST(request: NextRequest) {
       case "video":
         result = await prisma.video.create({ data })
         break
-      case "service":
-        result = await prisma.services.create({ data })
-        break
+      
       case "portfolio":
         result = await prisma.portfolioItem.create({ data })
-        break
-      case "testimonial":
-        result = await prisma.testimonial.create({ data })
-        break
-      case "contact":
-        result = await prisma.contact.create({ data })
         break
       default:
         return NextResponse.json({ error: "Invalid model" }, { status: 400 })
@@ -93,17 +76,8 @@ export async function PUT(request: NextRequest) {
       case "video":
         result = await prisma.video.update({ where: { id }, data })
         break
-      case "service":
-        result = await prisma.services.update({ where: { id }, data })
-        break
       case "portfolio":
         result = await prisma.portfolioItem.update({ where: { id }, data })
-        break
-      case "testimonial":
-        result = await prisma.testimonial.update({ where: { id }, data })
-        break
-      case "contact":
-        result = await prisma.contact.update({ where: { id }, data })
         break
       default:
         return NextResponse.json({ error: "Invalid model" }, { status: 400 })
@@ -132,17 +106,8 @@ export async function DELETE(request: NextRequest) {
       case "video":
         result = await prisma.video.delete({ where: { id } })
         break
-      case "service":
-        result = await prisma.services.delete({ where: { id } })
-        break
       case "portfolio":
         result = await prisma.portfolioItem.delete({ where: { id } })
-        break
-      case "testimonial":
-        result = await prisma.testimonial.delete({ where: { id } })
-        break
-      case "contact":
-        result = await prisma.contact.delete({ where: { id } })
         break
       default:
         return NextResponse.json({ error: "Invalid model" }, { status: 400 })
