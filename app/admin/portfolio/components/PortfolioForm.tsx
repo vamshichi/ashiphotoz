@@ -119,7 +119,7 @@ export default function PortfolioForm() {
             className="w-full p-2 border rounded-md"
             required
           >
-            <option value="wedding">Wedding</option>
+            <option value="wedding">Wedding.</option>
             <option value="portrait">Portrait</option>
             <option value="event">Event</option>
             <option value="landscape">Landscape</option>
