@@ -12,6 +12,7 @@ const nextConfig = {
       },
     ],
   },
+  transpilePackages: ["@/components"],
 };
 
 module.exports = nextConfig; 

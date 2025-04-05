@@ -1,8 +1,8 @@
 "use client"
 
+import React from 'react'
 import Link from "next/link"
 import { useState, useEffect } from "react"
-import { PrismaClient } from "@prisma/client/edge"
 
 enum ContentType {
   YOUTUBE = "youtube",
@@ -11,147 +11,164 @@ enum ContentType {
   TESTIMONIAL = "testimonial"
 }
 
-interface Content {
+// Remove if not used, or use it in your component
+// interface Content {
+//   id: string
+//   type: ContentType
+//   title: string
+//   description: string
+//   url?: string
+//   imageUrl?: string
+//   createdAt: Date
+//   updatedAt: Date
+// }
+
+interface VideoItem {
   id: string
-  type: ContentType
   title: string
   description: string
-  url?: string
-  imageUrl?: string
+  url: string
+  category: string
   createdAt: Date
-  updatedAt: Date
 }
 
-interface Video {
+interface ServiceItem {
   id: string
   title: string
-  category: ContentType
-  url: string
-  description?: string
-  thumbnail?: string
-  isActive: boolean
+  description: string
+  imageUrl: string
+  category: string
+  createdAt: Date
 }
 
 interface PortfolioItem {
   id: string
   title: string
   description: string
-  imageUrl: string
-  category: ContentType
-  isActive: boolean
+  image: string
+  category: string
+  createdAt: Date
 }
 
-interface Service {
+interface TestimonialItem {
   id: string
   name: string
-  description: string
-  price?: number
-  isActive: boolean
-}
-
-interface Testimonial {
-  id: string
-  name: string
-  feedback: string
+  content: string
   rating: number
-  imageUrl?: string
-  isActive: boolean
+  createdAt: Date
 }
 
 export default function AdminPage() {
+  const [videos, setVideos] = useState<VideoItem[]>([])
+  const [services, setServices] = useState<ServiceItem[]>([])
+  const [portfolio, setPortfolio] = useState<PortfolioItem[]>([])
+  const [testimonials, setTestimonials] = useState<TestimonialItem[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [
+          videosRes,
+          servicesRes,
+          portfolioRes,
+          testimonialsRes
+        ] = await Promise.all([
+          fetch('/api/admin/videos'),
+          fetch('/api/admin/services'),
+          fetch('/api/admin/portfolio'),
+          fetch('/api/admin/testimonials')
+        ])
+
+        const [
+          videosData,
+          servicesData,
+          portfolioData,
+          testimonialsData
+        ] = await Promise.all([
+          videosRes.json(),
+          servicesRes.json(),
+          portfolioRes.json(),
+          testimonialsRes.json()
+        ])
+
+        setVideos(videosData)
+        setServices(servicesData)
+        setPortfolio(portfolioData)
+        setTestimonials(testimonialsData)
+      } catch (err) {
+        setError('Failed to fetch data')
+        console.error('Error fetching data:', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchData()
+  }, [])
+
+  if (loading) {
+    return <div className="flex justify-center items-center min-h-screen">Loading...</div>
+  }
+
+  if (error) {
+    return <div className="text-red-500 text-center">{error}</div>
+  }
+
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-100 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Admin Dashboard.</h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-8">Admin Dashboard</h1>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* Videos Card */}
-          <Link href="/admin/videos" 
-                className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-            <div className="flex flex-col items-center text-center">
-              <svg 
-                className="w-12 h-12 text-red-600 mb-4" 
-                fill="none" 
-                stroke="currentColor" 
-                viewBox="0 0 24 24"
-              >
-                <path 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  strokeWidth={2} 
-                  d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" 
-                />
-              </svg>
-              <h2 className="text-xl font-semibold text-gray-900 mb-2">Videos</h2>
-              <p className="text-gray-600">Manage your video content</p>
-            </div>
-          </Link>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {/* Videos Section */}
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-xl font-semibold mb-4">Videos</h2>
+            <p className="text-gray-600 mb-4">{videos.length} videos</p>
+            <Link 
+              href="/admin/videos"
+              className="inline-block bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            >
+              Manage Videos
+            </Link>
+          </div>
 
-          {/* Portfolio Card */}
-          <Link href="/admin/portfolio" 
-                className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-            <div className="flex flex-col items-center text-center">
-              <svg 
-                className="w-12 h-12 text-red-600 mb-4" 
-                fill="none" 
-                stroke="currentColor" 
-                viewBox="0 0 24 24"
-              >
-                <path 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  strokeWidth={2} 
-                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" 
-                />
-              </svg>
-              <h2 className="text-xl font-semibold text-gray-900 mb-2">Portfolio</h2>
-              <p className="text-gray-600">Manage your portfolio items</p>
-            </div>
-          </Link>
+          {/* Services Section */}
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-xl font-semibold mb-4">Services</h2>
+            <p className="text-gray-600 mb-4">{services.length} services</p>
+            <Link 
+              href="/admin/services"
+              className="inline-block bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            >
+              Manage Services
+            </Link>
+          </div>
 
-          {/* Services Card */}
-          <Link href="/admin/services" 
-                className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-            <div className="flex flex-col items-center text-center">
-              <svg 
-                className="w-12 h-12 text-red-600 mb-4" 
-                fill="none" 
-                stroke="currentColor" 
-                viewBox="0 0 24 24"
-              >
-                <path 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  strokeWidth={2} 
-                  d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" 
-                />
-              </svg>
-              <h2 className="text-xl font-semibold text-gray-900 mb-2">Services</h2>
-              <p className="text-gray-600">Manage your services</p>
-            </div>
-          </Link>
+          {/* Portfolio Section */}
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-xl font-semibold mb-4">Portfolio</h2>
+            <p className="text-gray-600 mb-4">{portfolio.length} items</p>
+            <Link 
+              href="/admin/portfolio"
+              className="inline-block bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            >
+              Manage Portfolio
+            </Link>
+          </div>
 
-          {/* Testimonials Card */}
-          <Link href="/admin/testimonials" 
-                className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-            <div className="flex flex-col items-center text-center">
-              <svg 
-                className="w-12 h-12 text-red-600 mb-4" 
-                fill="none" 
-                stroke="currentColor" 
-                viewBox="0 0 24 24"
-              >
-                <path 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  strokeWidth={2} 
-                  d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" 
-                />
-              </svg>
-              <h2 className="text-xl font-semibold text-gray-900 mb-2">Testimonials</h2>
-              <p className="text-gray-600">Manage your testimonials</p>
-            </div>
-          </Link>
+          {/* Testimonials Section */}
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-xl font-semibold mb-4">Testimonials</h2>
+            <p className="text-gray-600 mb-4">{testimonials.length} testimonials</p>
+            <Link 
+              href="/admin/testimonials"
+              className="inline-block bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            >
+              Manage Testimonials
+            </Link>
+          </div>
         </div>
       </div>
     </div>
