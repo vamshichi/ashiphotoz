@@ -57,7 +57,7 @@ export default function ServiceForm() {
 
       toast.success("Service added successfully!");
       
-      // Reset form
+      // Reset forms
       setFormData({
         title: "",
         description: "",
