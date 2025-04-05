@@ -8,7 +8,7 @@ export default function AboutPage() {
     <div className="container px-4 py-16 mx-auto">
       <div className="max-w-3xl mx-auto mb-16 text-center">
         <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">About Us</h1>
-        <p className="mt-4 text-xl text-muted-foreground">Get to know the story and team behind Ashi Photoz</p>
+        <p className="mt-4 text-xl text-muted-foreground">Get to know the story and team behind Ashi Photoz.</p>
       </div>
 
       {/* Our Story */}
